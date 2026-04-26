@@ -3,6 +3,8 @@ kind: AppProject
 metadata:
   name: observability
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
 spec:
   description: Observability stack
   sourceRepos:
@@ -21,6 +23,8 @@ kind: AppProject
 metadata:
   name: data
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
 spec:
   description: Data layer
   sourceRepos:
@@ -41,6 +45,8 @@ kind: AppProject
 metadata:
   name: apps
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
 spec:
   description: Fintech application workloads
   sourceRepos:
