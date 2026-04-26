@@ -4,7 +4,7 @@ metadata:
   name: kiali-operator
   namespace: argocd
 spec:
-  project: default
+  project: observability
   source:
     repoURL: https://kiali.org/helm-charts
     chart: kiali-operator

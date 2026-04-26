@@ -1,0 +1,55 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: observability
+  namespace: argocd
+spec:
+  description: Observability stack
+  sourceRepos:
+  - '*'
+  destinations:
+  - namespace: observability
+    server: https://kubernetes.default.svc
+  - namespace: kiali-operator
+    server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+  - group: '*'
+    kind: '*'
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: data
+  namespace: argocd
+spec:
+  description: Data layer
+  sourceRepos:
+  - '*'
+  destinations:
+  - namespace: data
+    server: https://kubernetes.default.svc
+  - namespace: tracing
+    server: https://kubernetes.default.svc
+  - namespace: elastic-system
+    server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+  - group: '*'
+    kind: '*'
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: apps
+  namespace: argocd
+spec:
+  description: Fintech application workloads
+  sourceRepos:
+  - '*'
+  destinations:
+  - namespace: fintech
+    server: https://kubernetes.default.svc
+  - namespace: sre-agent
+    server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+  - group: '*'
+    kind: '*'

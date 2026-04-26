@@ -4,7 +4,7 @@ metadata:
   name: kiali
   namespace: argocd
 spec:
-  project: default
+  project: observability
   source:
     repoURL: https://github.com/hyunminlim90/financial-technology-sre-platform-gitops.git
     targetRevision: main
