@@ -25,10 +25,8 @@ alertmanager:
 
 grafana:
   enabled: true
-
-  nodeSelector:
-    node-role: observability
-
+  initChownData:
+    enabled: false
   persistence:
     enabled: true
     type: pvc
@@ -36,30 +34,10 @@ grafana:
     accessModes:
       - ReadWriteOnce
     size: 10Gi
-
   admin:
     existingSecret: grafana-admin-secret
     userKey: admin-user
     passwordKey: admin-password
-
-  initChownData:
-    enabled: false
-    image:
-      registry: docker.io
-      repository: library/busybox
-      tag: "1.37.0"
-
-  securityContext:
-    runAsUser: 472
-    runAsGroup: 472
-    fsGroup: 472
-
-  containerSecurityContext:
-    runAsUser: 472
-    runAsGroup: 472
-    allowPrivilegeEscalation: false
-    readOnlyRootFilesystem: false
-
   service:
     type: ClusterIP
 
