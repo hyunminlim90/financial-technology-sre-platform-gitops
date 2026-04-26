@@ -1,0 +1,46 @@
+prometheus:
+  prometheusSpec:
+    retention: 7d
+    nodeSelector:
+      node-role: observability
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 20Gi
+
+alertmanager:
+  alertmanagerSpec:
+    nodeSelector:
+      node-role: observability
+    storage:
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 5Gi
+
+grafana:
+  enabled: true
+  nodeSelector:
+    node-role: observability
+  persistence:
+    enabled: true
+    size: 10Gi
+    accessModes:
+      - ReadWriteOnce
+  adminUser: admin
+  adminPassword: "ChangeMe-StrongPassword"
+  service:
+    type: ClusterIP
+
+kube-state-metrics:
+  nodeSelector:
+    node-role: observability
+
+prometheus-node-exporter:
+  tolerations:
+    - operator: Exists
