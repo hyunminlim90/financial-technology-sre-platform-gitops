@@ -1,0 +1,27 @@
+apiVersion: kiali.io/v1alpha1
+kind: Kiali
+metadata:
+  name: kiali
+  namespace: observability
+spec:
+  auth:
+    strategy: anonymous
+
+  deployment:
+    namespace: observability
+    node_selector:
+      node-role: observability
+    service_type: ClusterIP
+
+  external_services:
+    prometheus:
+      url: http://monitoring-kube-prometheus-prometheus.observability.svc.cluster.local:9090
+
+    grafana:
+      enabled: true
+      in_cluster_url: http://monitoring-grafana.observability.svc.cluster.local
+      url: https://ft-sre-grafana.opentofu.click
+
+    tracing:
+      enabled: false
+      
