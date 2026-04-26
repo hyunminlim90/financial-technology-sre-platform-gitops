@@ -38,7 +38,7 @@ grafana:
     storageClassName: local-path
 
   initChownData:
-    enabled: true
+    enabled: false
 
   securityContext:
     runAsUser: 472
@@ -46,6 +46,8 @@ grafana:
     fsGroup: 472
 
   containerSecurityContext:
+    runAsUser: 472
+    runAsGroup: 472
     allowPrivilegeEscalation: false
     readOnlyRootFilesystem: false
     capabilities:
