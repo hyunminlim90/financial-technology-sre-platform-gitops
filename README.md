@@ -78,10 +78,13 @@ node-role=observability
 ```text
 ft-sre-root
     ├── projects.yaml
+    ├── root-app.yaml
     └── apps/
         ├── monitoring.yaml
         ├── kiali.yaml
         └── kiali-operator.yaml
+        ...
+        ...
 ```
 
 ### Root Application
