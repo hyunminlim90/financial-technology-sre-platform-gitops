@@ -9,6 +9,8 @@ spec:
     repoURL: https://github.com/hyunminlim90/financial-technology-sre-platform-gitops.git
     targetRevision: main
     path: bootstrap
+    directory:
+      recurse: true
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
