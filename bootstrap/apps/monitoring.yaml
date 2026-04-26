@@ -13,6 +13,9 @@ spec:
     helm:
       valueFiles:
       - $values/observability/kube-prometheus-stack/values.yaml
+      parameters:
+      - name: grafana.initChownData.enabled
+        value: "false"
 
   - repoURL: https://github.com/hyunminlim90/financial-technology-sre-platform-gitops.git
     targetRevision: main
