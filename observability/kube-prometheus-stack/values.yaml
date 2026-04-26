@@ -25,15 +25,36 @@ alertmanager:
 
 grafana:
   enabled: true
+
   nodeSelector:
     node-role: observability
+
   persistence:
     enabled: true
+    type: pvc
     size: 10Gi
     accessModes:
       - ReadWriteOnce
+    storageClassName: local-path
+
+  initChownData:
+    enabled: true
+
+  securityContext:
+    runAsUser: 472
+    runAsGroup: 472
+    fsGroup: 472
+
+  containerSecurityContext:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: false
+    capabilities:
+      drop:
+        - ALL
+
   adminUser: admin
   adminPassword: "ChangeMe-StrongPassword"
+
   service:
     type: ClusterIP
 
