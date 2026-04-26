@@ -6,7 +6,7 @@
 
 ## 📌 Overview
 
-이 저장소는 FinTech SRE Platform의 **Kubernetes 배포 상태(desired state)**를 관리하는 GitOps 저장소입니다.
+이 저장소는 FinTech SRE Platform의  **Kubernetes 배포 상태(desired state)** 를 관리하는 GitOps 저장소입니다.
 
 * ArgoCD가 이 저장소를 기준으로 클러스터를 동기화합니다.
 * 모든 인프라/플랫폼 구성은 **Git → ArgoCD → Kubernetes** 흐름으로 반영됩니다.
