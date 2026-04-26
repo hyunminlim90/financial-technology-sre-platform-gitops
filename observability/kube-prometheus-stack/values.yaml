@@ -29,9 +29,6 @@ grafana:
   nodeSelector:
     node-role: observability
 
-  initChownData:
-    enabled: false
-
   persistence:
     enabled: true
     type: pvc
@@ -44,6 +41,13 @@ grafana:
     existingSecret: grafana-admin-secret
     userKey: admin-user
     passwordKey: admin-password
+
+  initChownData:
+    enabled: false
+    image:
+      registry: docker.io
+      repository: library/busybox
+      tag: "1.37.0"
 
   securityContext:
     runAsUser: 472
