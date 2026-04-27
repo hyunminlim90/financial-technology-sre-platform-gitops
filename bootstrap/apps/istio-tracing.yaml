@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: istio-tracing
+  namespace: argocd
+spec:
+  project: observability
+  source:
+    repoURL: https://github.com/hyunminlim90/financial-technology-sre-platform-gitops.git
+    targetRevision: main
+    path: observability/tracing/istio
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: istio-system
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
