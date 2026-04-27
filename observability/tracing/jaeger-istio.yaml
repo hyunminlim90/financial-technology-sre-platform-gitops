@@ -1,0 +1,32 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: tracing-gateway
+  namespace: tracing
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http-tracing
+      protocol: HTTP
+    hosts:
+    - "ft-sre-jaeger.opentofu.click"
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: jaeger-vs
+  namespace: tracing
+spec:
+  hosts:
+  - "ft-sre-jaeger.opentofu.click"
+  gateways:
+  - tracing-gateway
+  http:
+  - route:
+    - destination:
+        host: jaeger-collector
+        port:
+          number: 16686

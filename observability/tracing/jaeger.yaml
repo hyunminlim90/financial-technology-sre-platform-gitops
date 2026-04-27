@@ -1,0 +1,92 @@
+apiVersion: opentelemetry.io/v1beta1
+kind: OpenTelemetryCollector
+metadata:
+  name: jaeger
+  namespace: tracing
+spec:
+  mode: deployment
+  image: jaegertracing/jaeger:2.17.0
+  replicas: 1
+
+  nodeSelector:
+    node-role: observability
+
+  resources:
+    requests:
+      cpu: 300m
+      memory: 512Mi
+    limits:
+      cpu: "1"
+      memory: 1Gi
+
+  env:
+  - name: ES_USERNAME
+    valueFrom:
+      secretKeyRef:
+        name: jaeger-es-secret
+        key: username
+  - name: ES_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: jaeger-es-secret
+        key: password
+
+  ports:
+  - name: jaeger-ui
+    port: 16686
+    targetPort: 16686
+  - name: otlp-grpc
+    port: 4317
+    targetPort: 4317
+  - name: otlp-http
+    port: 4318
+    targetPort: 4318
+
+  config:
+    service:
+      extensions:
+      - jaeger_storage
+      - jaeger_query
+      pipelines:
+        traces:
+          receivers:
+          - otlp
+          processors:
+          - batch
+          exporters:
+          - jaeger_storage_exporter
+
+    extensions:
+      jaeger_query:
+        storage:
+          traces: esstore
+        http:
+          endpoint: 0.0.0.0:16686
+        grpc:
+          endpoint: 0.0.0.0:16685
+
+      jaeger_storage:
+        backends:
+          esstore:
+            elasticsearch:
+              server_urls:
+              - https://tracing-es-es-http.tracing.svc.cluster.local:9200
+              username: ${env:ES_USERNAME}
+              password: ${env:ES_PASSWORD}
+              tls:
+                insecure_skip_verify: true
+
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+          http:
+            endpoint: 0.0.0.0:4318
+
+    processors:
+      batch: {}
+
+    exporters:
+      jaeger_storage_exporter:
+        trace_storage: esstore
