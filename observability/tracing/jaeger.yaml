@@ -60,6 +60,7 @@ spec:
       jaeger_query:
         storage:
           traces: esstore
+        base_path: /
         http:
           endpoint: 0.0.0.0:16686
         grpc:
@@ -71,8 +72,10 @@ spec:
             elasticsearch:
               server_urls:
               - https://tracing-es-es-http.tracing.svc.cluster.local:9200
-              username: ${env:ES_USERNAME}
-              password: ${env:ES_PASSWORD}
+              auth:
+                basic:
+                  username: ${env:ES_USERNAME}
+                  password: ${env:ES_PASSWORD}
               tls:
                 insecure_skip_verify: true
 
