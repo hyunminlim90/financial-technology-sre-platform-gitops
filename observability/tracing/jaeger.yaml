@@ -1,47 +1,22 @@
-apiVersion: opentelemetry.io/v1beta1
-kind: OpenTelemetryCollector
+apiVersion: v1
+kind: ConfigMap
 metadata:
-  name: jaeger
+  name: jaeger-config
   namespace: tracing
-spec:
-  mode: deployment
-  image: jaegertracing/jaeger:2.17.0
-  replicas: 1
-
-  nodeSelector:
-    node-role: observability
-
-  env:
-  - name: ES_USERNAME
-    valueFrom:
-      secretKeyRef:
-        name: jaeger-es-secret
-        key: username
-  - name: ES_PASSWORD
-    valueFrom:
-      secretKeyRef:
-        name: jaeger-es-secret
-        key: password
-
-  ports:
-  - name: jaeger-ui
-    port: 16686
-    targetPort: 16686
-  - name: otlp-grpc
-    port: 4317
-    targetPort: 4317
-  - name: otlp-http
-    port: 4318
-    targetPort: 4318
-
-  config:
+data:
+  config.yaml: |
     service:
-      extensions: [jaeger_storage, jaeger_query]
+      extensions:
+      - jaeger_storage
+      - jaeger_query
       pipelines:
         traces:
-          receivers: [otlp]
-          processors: [batch]
-          exporters: [jaeger_storage_exporter]
+          receivers:
+          - otlp
+          processors:
+          - batch
+          exporters:
+          - jaeger_storage_exporter
 
     extensions:
       jaeger_query:
@@ -77,3 +52,81 @@ spec:
     exporters:
       jaeger_storage_exporter:
         trace_storage: esstore
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jaeger
+  namespace: tracing
+  labels:
+    app: jaeger
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jaeger
+  template:
+    metadata:
+      labels:
+        app: jaeger
+    spec:
+      nodeSelector:
+        node-role: observability
+      containers:
+      - name: jaeger
+        image: cr.jaegertracing.io/jaegertracing/jaeger:2.17.0
+        args:
+        - "--config"
+        - "/jaeger/config.yaml"
+        env:
+        - name: ES_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: jaeger-es-secret
+              key: username
+        - name: ES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: jaeger-es-secret
+              key: password
+        ports:
+        - name: ui
+          containerPort: 16686
+        - name: otlp-grpc
+          containerPort: 4317
+        - name: otlp-http
+          containerPort: 4318
+        resources:
+          requests:
+            cpu: 300m
+            memory: 512Mi
+          limits:
+            cpu: "1"
+            memory: 1Gi
+        volumeMounts:
+        - name: jaeger-config
+          mountPath: /jaeger/config.yaml
+          subPath: config.yaml
+      volumes:
+      - name: jaeger-config
+        configMap:
+          name: jaeger-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jaeger
+  namespace: tracing
+spec:
+  selector:
+    app: jaeger
+  ports:
+  - name: ui
+    port: 16686
+    targetPort: 16686
+  - name: otlp-grpc
+    port: 4317
+    targetPort: 4317
+  - name: otlp-http
+    port: 4318
+    targetPort: 4318
