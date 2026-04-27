@@ -11,14 +11,6 @@ spec:
   nodeSelector:
     node-role: observability
 
-  resources:
-    requests:
-      cpu: 300m
-      memory: 512Mi
-    limits:
-      cpu: "1"
-      memory: 1Gi
-
   env:
   - name: ES_USERNAME
     valueFrom:
@@ -44,27 +36,19 @@ spec:
 
   config:
     service:
-      extensions:
-      - jaeger_storage
-      - jaeger_query
+      extensions: [jaeger_storage, jaeger_query]
       pipelines:
         traces:
-          receivers:
-          - otlp
-          processors:
-          - batch
-          exporters:
-          - jaeger_storage_exporter
+          receivers: [otlp]
+          processors: [batch]
+          exporters: [jaeger_storage_exporter]
 
     extensions:
       jaeger_query:
         storage:
           traces: esstore
-        base_path: /
         http:
           endpoint: 0.0.0.0:16686
-        grpc:
-          endpoint: 0.0.0.0:16685
 
       jaeger_storage:
         backends:
