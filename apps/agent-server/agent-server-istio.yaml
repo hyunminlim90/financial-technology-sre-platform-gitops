@@ -1,0 +1,35 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: agent-server-gateway
+  namespace: sre-agent
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 80
+        name: http-agent-server
+        protocol: HTTP
+      hosts:
+        - ft-sre-agent.opentofu.click
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: agent-server
+  namespace: sre-agent
+spec:
+  hosts:
+    - ft-sre-agent.opentofu.click
+  gateways:
+    - agent-server-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /
+      route:
+        - destination:
+            host: agent-server.sre-agent.svc.cluster.local
+            port:
+              number: 80

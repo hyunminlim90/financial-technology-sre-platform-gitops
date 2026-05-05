@@ -6,6 +6,7 @@ resources:
   - configmap.yaml
   - deployment.yaml
   - service.yaml
+  - agent-server-istio.yaml
 
 images:
   - name: 172.30.1.105:5000/fin-tech-sre/agent-server
