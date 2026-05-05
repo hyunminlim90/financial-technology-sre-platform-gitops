@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: agent-server-config
+  namespace: sre-agent
+data:
+  SPRING_PROFILES_ACTIVE: "prod"
+  AGENT_KNOWLEDGE_SEARCH_CLIENT: "stub"
+  AGENT_KNOWLEDGE_VECTOR_ADAPTER: "stub"
+  AGENT_EMBEDDING_PROVIDER: "stub"
+  AGENT_EXPLANATION_PROVIDER: "stub"

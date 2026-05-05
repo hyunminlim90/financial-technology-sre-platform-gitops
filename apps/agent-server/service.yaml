@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: agent-server
+  namespace: sre-agent
+  labels:
+    app: agent-server
+spec:
+  type: ClusterIP
+  selector:
+    app: agent-server
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080

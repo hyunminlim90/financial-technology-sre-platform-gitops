@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: agent-server
+  namespace: argocd
+spec:
+  project: apps
+  source:
+    repoURL: https://github.com/hyunminlim90/financial-technology-sre-platform-gitops.git
+    targetRevision: main
+    path: apps/agent-server
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: sre-agent
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
